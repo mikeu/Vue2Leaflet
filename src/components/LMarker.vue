@@ -103,7 +103,18 @@ export default {
   },
   render: function(h) {
     if (this.ready && this.$slots.default) {
-      return h('div', { style: { display: 'none' } }, this.$slots.default);
+      // Using { display: 'none' } can lead to issues such as #514, where
+      // visual elements defined within marker icons were inheriting that
+      // and also not displaying when referenced elsewhere.
+      const visuallyHidden = {
+        position: "absolute",
+        overflow: "hidden",
+        clip: "rect(0 0 0 0)",
+        height: "1px", width: "1px",
+        margin: "-1px", padding: "0", border: "0"
+      };
+
+      return h('div', { style: visuallyHidden }, this.$slots.default);
     }
     return null;
   },
